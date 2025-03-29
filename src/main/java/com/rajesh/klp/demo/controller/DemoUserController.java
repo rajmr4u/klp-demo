@@ -40,13 +40,13 @@ public class DemoUserController {
 
 	    @GetMapping("/{id}")
 	    public DemoUser getUser(@PathVariable Integer id) {
-	    	System.out.println("Demo User getId ....."+ id);
+	    	
 	        return repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 	    }
 
 	    @GetMapping
 	    public List<DemoUser> getUsers(@RequestParam(required = false, name = "type-filter") String type) {
-	    	System.out.println("Demo User All Users .....");
+	    	
 	        return (type == null) ? repository.findAll() : repository.findByType(type);
 	    }
 
