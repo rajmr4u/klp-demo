@@ -1,7 +1,5 @@
 package com.rajesh.klp.demo.controller;
 
-
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,41 +12,42 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rajesh.klp.demo.entity.DemoUser;
+import com.rajesh.klp.demo.exceptions.UserNotFoundException;
 import com.rajesh.klp.demo.repository.DemoUserRepository;
 
 @RestController
 @RequestMapping("/user")
 public class DemoUserController {
 
-    @Autowired
-	 private final DemoUserRepository repository;
+	@Autowired
+	private final DemoUserRepository repository;
 
-	    public DemoUserController(DemoUserRepository repository) {
-	        this.repository = repository;
-	    }
+	public DemoUserController(DemoUserRepository repository) {
+		this.repository = repository;
+	}
 
-	    @PostMapping
-	    public DemoUser createUser(@RequestBody DemoUser user) {
-	    	
-	    	if (!user.getType().equals("USER") && !user.getType().equals("ADMIN")) {
-	            throw new IllegalArgumentException("Invalid type, must be 'USER' or 'ADMIN'");
-	            
-	        }
-	        return repository.save(user);
-	       
-	    }
+	@PostMapping
+	public DemoUser createUser(@RequestBody DemoUser user) {
 
-	    @GetMapping("/{id}")
-	    public DemoUser getUser(@PathVariable Integer id) {
-	    	
-	        return repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-	    }
+		if (!user.getType().equals("USER") && !user.getType().equals("ADMIN")) {
+			throw new UserNotFoundException("Invalid type, must be 'USER' or 'ADMIN'");
+		}
+		
+			return repository.save(user);
+		
 
-	    @GetMapping
-	    public List<DemoUser> getUsers(@RequestParam(required = false, name = "type-filter") String type) {
-	    	
-	        return (type == null) ? repository.findAll() : repository.findByType(type);
-	    }
+	}
 
-	
+	@GetMapping("/{id}")
+	public DemoUser getUser(@PathVariable Integer id) {
+
+		return repository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found  : " + id));
+	}
+
+	@GetMapping
+	public List<DemoUser> getUsers(@RequestParam(required = false, name = "type-filter") String type) {
+
+		return (type == null) ? repository.findAll() : repository.findByType(type);
+	}
+
 }
