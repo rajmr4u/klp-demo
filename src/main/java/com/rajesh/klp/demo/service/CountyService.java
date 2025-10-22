@@ -1,18 +1,25 @@
 package com.rajesh.klp.demo.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class CountyService {
 
-	private static final String API_URL = "https://ws.geonorge.no/kommuneinfo/v1/fylker";
+	@Value("${API_URL}")
+	private String API_URL;
+	
+	//private static final String API_URL = "https://ws.geonorge.no/kommuneinfo/v1/fylker";
+	
+
 
 	public String getCountyName(String countyNumber) {
 		RestTemplate restTemplate = new RestTemplate();
 		String url = UriComponentsBuilder.fromHttpUrl(API_URL).pathSegment(countyNumber).toUriString();
+		
+		System.out.println("API Value from Application properties  : "+API_URL);
 
 		try {
 
